@@ -36,6 +36,7 @@ option(ENABLE_PULSEAUDIO "Enable PulseAudio backend" ON)
 option(ENABLE_ALSA "Enable ALSA backend" ON)
 option(ENABLE_COREAUDIO "Enable CoreAudio backend" ON)
 option(ENABLE_WASAPI "Enable WASAPI backend" ON)
+option(SOUNDIO_INSTALL "Generate installation target" ON)
 
 find_package(Threads)
 if(Threads_FOUND)
@@ -233,7 +234,9 @@ if(BUILD_DYNAMIC_LIBS)
         LINKER_LANGUAGE C
     )
     target_link_libraries(libsoundio_shared LINK_PUBLIC ${LIBSOUNDIO_LIBS})
-    install(TARGETS libsoundio_shared DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    if(SOUNDIO_INSTALL)
+        install(TARGETS libsoundio_shared DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    endif()
 endif()
 
 if(BUILD_STATIC_LIBS)
@@ -243,12 +246,16 @@ if(BUILD_STATIC_LIBS)
         COMPILE_FLAGS ${LIB_CFLAGS}
         LINKER_LANGUAGE C
     )
-    install(TARGETS libsoundio_static DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    if(SOUNDIO_INSTALL)
+        install(TARGETS libsoundio_static DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    endif()
 endif()
 
-install(FILES
-    ${LIBSOUNDIO_HEADERS}
-    DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/soundio")
+if(SOUNDIO_INSTALL)
+    install(FILES
+        ${LIBSOUNDIO_HEADERS}
+        DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/soundio")
+endif()
 
 # Example Programs
 
@@ -262,7 +269,9 @@ if(BUILD_EXAMPLE_PROGRAMS)
     else()
         target_link_libraries(sio_sine libsoundio_static ${LIBSOUNDIO_LIBS} ${LIBM})
     endif()
-    install(TARGETS sio_sine DESTINATION ${CMAKE_INSTALL_BINDIR})
+    if(SOUNDIO_INSTALL)
+        install(TARGETS sio_sine DESTINATION ${CMAKE_INSTALL_BINDIR})
+    endif()
 
     add_executable(sio_list_devices example/sio_list_devices.c)
     set_target_properties(sio_list_devices PROPERTIES
@@ -273,7 +282,9 @@ if(BUILD_EXAMPLE_PROGRAMS)
     else()
         target_link_libraries(sio_list_devices libsoundio_static ${LIBSOUNDIO_LIBS})
     endif()
-    install(TARGETS sio_list_devices DESTINATION ${CMAKE_INSTALL_BINDIR})
+    if(SOUNDIO_INSTALL)
+        install(TARGETS sio_list_devices DESTINATION ${CMAKE_INSTALL_BINDIR})
+    endif()
 
     add_executable(sio_microphone example/sio_microphone.c)
     set_target_properties(sio_microphone PROPERTIES
@@ -284,7 +295,9 @@ if(BUILD_EXAMPLE_PROGRAMS)
     else()
         target_link_libraries(sio_microphone libsoundio_static ${LIBSOUNDIO_LIBS})
     endif()
-    install(TARGETS sio_microphone DESTINATION ${CMAKE_INSTALL_BINDIR})
+    if(SOUNDIO_INSTALL)
+        install(TARGETS sio_microphone DESTINATION ${CMAKE_INSTALL_BINDIR})
+    endif()
 
     add_executable(sio_record example/sio_record.c)
     set_target_properties(sio_record PROPERTIES
@@ -295,7 +308,9 @@ if(BUILD_EXAMPLE_PROGRAMS)
     else()
         target_link_libraries(sio_record libsoundio_static ${LIBSOUNDIO_LIBS})
     endif()
-    install(TARGETS sio_record DESTINATION ${CMAKE_INSTALL_BINDIR})
+    if(SOUNDIO_INSTALL)
+        install(TARGETS sio_record DESTINATION ${CMAKE_INSTALL_BINDIR})
+    endif()
 endif()
 
 if(BUILD_TESTS)
